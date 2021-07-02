@@ -1,25 +1,36 @@
+import ProtectedRoute from 'components/routing/ProtectedRoute';
+import AuthContextProvider from 'api/contexts/AuthContext';
 import { Suspense } from 'react';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import './App.css';
-import {BrowserRouter as Router ,Route,Redirect,Switch} from 'react-router-dom'
+import Auth from './components/Auth/Auth';
 import Chat from './components/Chat';
-import Login from './components/Auth/Login'
 
 function App() {
   return (
-    <div className="App">
-      <Suspense fallback={<div>Loading ...</div>}>
-        <Router>
+    <AuthContextProvider>
+      <div className="App">
+        <Suspense fallback={<div>Loading ...</div>}>
+          <Router>
             <Switch>
-                <Redirect exact from='/' to="/chat"/>
+              <Redirect exact from="/" to="/login" />
 
-                <Route path="/chat" component={Chat}/>
-                <Route path="/login" component={Login}/>
-
+              <Route
+                exact
+                path="/login"
+                render={(props) => <Auth {...props} authRoute="login" />}
+              />
+              <Route
+                exact
+                path="/register"
+                render={(props) => <Auth {...props} authRoute="register" />}
+              />
+              <ProtectedRoute path="/chat" component={Chat} />
             </Switch>
-        </Router>
-      </Suspense>
-    
-    </div>
+          </Router>
+        </Suspense>
+      </div>
+    </AuthContextProvider>
   );
 }
 

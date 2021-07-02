@@ -2,19 +2,17 @@ const mongoose = require('mongoose');
 
 const schema = new mongoose.Schema(
   {
-    id_user1: {
+    conversationId: {
       type: String,
-      require: true,
     },
-    id_user2: {
+    sender: {
       type: String,
-      require: true,
     },
-    content: Array,
+    text: {
+      type: String,
+    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 const Messenger = mongoose.model('Messenger', schema, 'messenger');

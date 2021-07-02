@@ -1,1 +1,54 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5rem;
+  font-weight: 500;
+}
 
+.wrapper form {
+  padding: 2.5rem 3rem;
+}
+
+.wrapper form .title {
+  color: #f5f5f5;
+  text-align: center;
+}
+
+.wrapper form label {
+  color: #f5f5f5;
+}
+
+.wrapper form input {
+  background-color: rgba(102, 110, 216, 0.3) !important;
+  border-radius: 10px !important;
+  border: 0 !important;
+}
+.wrapper form input:focus {
+  box-shadow: none !important;
+  outline: 0px !important;
+}
+
+
+.wrapper form .btn {
+  background:  linear-gradient(to right, #86a8e7, #7f7fd5);
+  background-size: cover;
+  color: white;
+  width: 16rem;
+  height: 4rem;
+  border: 0 !important;
+  border-radius: 40px;
+  margin: 0 auto;
+  font-size: 18px;
+  font-weight: 500;
+}
+.wrapper form .btn:focus {
+  box-shadow: none !important;
+  outline: 0px !important;
+  transform: translateY(-3px);
+}
+
+.wrapper form a {
+  font-size: 0.9rem;
+  color: #f5f5f5;
+}

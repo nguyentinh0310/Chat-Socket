@@ -1,23 +1,19 @@
-const User = require("../model/userModel");
-const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken')
+const User = require('../model/userModel');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const userCtrl = {
   resgister: async (req, res, next) => {
     try {
       const { username, fullname, password } = req.body;
       if (!username || !fullname || !password)
-        return res
-          .status(400)
-          .json({ message: "Xin mời nhập tất cả các trường" });
+        return res.status(400).json({ success: false, message: 'Xin mời nhập tất cả các trường' });
       if (password.length < 6)
-        return res
-          .status(400)
-          .json({ message: "Mật khẩu phải lớn hơn 6 ký tự" });
+        return res.status(400).json({ success: false, message: 'Mật khẩu phải lớn hơn 6 ký tự' });
 
       const user = await User.findOne({ username });
       if (user)
-        return res.status(400).json({ message: "username này đã tồn tại 😢" });
+        return res.status(400).json({ success: false, message: 'username này đã tồn tại 😢' });
       const passwordHash = await bcrypt.hash(password, 10);
 
       const newUser = await User({
@@ -28,8 +24,12 @@ const userCtrl = {
 
       await newUser.save();
 
+      const accessToken = jwt.sign({ id: newUser._id }, process.env.ACCESS_TOKEN_SECRET);
+
       res.status(201).json({
-        message: "Đăng ký thành công ",
+        success: true,
+        message: 'Đăng ký thành công ',
+        accessToken,
       });
     } catch (err) {
       next(err);
@@ -42,49 +42,28 @@ const userCtrl = {
       if (!formatUsername || !password)
         return res
           .status(400)
-          .json({ message: "Xin mời nhập email hoặc mật khẩu 😢" });
+          .json({ success: false, message: 'Xin mời nhập email hoặc mật khẩu 😢' });
 
       const user = await User.findOne({ username });
       if (!user)
-        return res.status(400).json({ message: "Username không tồn tại 😢!" });
+        return res.status(400).json({ success: false, message: 'Username không tồn tại 😢!' });
 
       const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch)
-        return res.status(400).json({ message: "Mật khẩu không đúng 😢!" });
-      const refresh_token = createRefreshToken({ id: user._id }); // xét mã id
-      res.cookie("refresh_token", refresh_token, {
-        httpOnlly: true,
-        path: "/api/auth/refresh_token",
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 day
-      });
+      if (!isMatch) return res.status(400).json({ message: 'Mật khẩu không đúng 😢!' });
+   
+      const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN_SECRET);
 
-      res.status(200).json({ message: "Đăng nhập thành công!", user });
+      res.status(200).json({ success: true, message: 'Đăng nhập thành công!', accessToken });
     } catch (err) {
       next(err);
     }
   },
-  getAccessToken: async (req, res, next) => {
+
+  getInfor: async (req, res, next) => {
     try {
-      const rf_token = req.cookies.refresh_token;
-      if (!rf_token)
-        res.status(400).json({ message: "Đăng nhập ngay bây giờ" });
+      const user = await User.findById(req.user.id).select('-password');
 
-      jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err)
-          res.status(400).json({ message: "Hãy đăng nhập ngay bây giờ" });
-
-        const access_token = createAccessToken({ id: user.id });
-
-        res.status(200).json({ access_token });
-      });
-    } catch (err) {
-      next(err);
-    }
-  },
-  logOut: async (req, res, next) => {
-    try {
-      res.clearCookie("refresh_token", { path: "/api/auth/refresh_token" });
-      res.status(200).json({ message: "Đăng xuất thành công" });
+      res.status(200).json({ success: true, user });
     } catch (err) {
       next(err);
     }
@@ -92,9 +71,9 @@ const userCtrl = {
   getAllInfo: async (req, res, next) => {
     try {
       try {
-        const user = await User.find().select("-password");
+        const users = await User.find().select('-password');
 
-        res.status(200).json({ user });
+        res.status(200).json({ success: true, users });
       } catch (err) {
         next(err);
       }
@@ -102,18 +81,23 @@ const userCtrl = {
       next(err);
     }
   },
-};
+  // get a user
+  getAUser: async (req, res, next) => {
+    try {
+      const userId = req.query.userId;
+      const username = req.query.username;
 
-const createAccessToken = (payload) => {
-  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "15m",
-  });
-};
+      const user = userId
+        ? await User.findById(userId)
+        : await User.findOne({ username: username });
+      //lấy các trường trong doc -> in ra nhưng trường còn lại trừ  password,updatedAt
+      const { password, updatedAt, ...others } = user._doc;
+      res.status(200).json(others);
+    } catch (err) {
+      next(err);
+    }
+  },
 
-const createRefreshToken = (payload) => {
-  return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: "7d",
-  });
 };
 
 module.exports = userCtrl;
