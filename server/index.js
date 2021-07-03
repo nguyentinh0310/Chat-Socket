@@ -40,12 +40,7 @@ mongoose.connect(
   }
 );
 
-app.all('*', (req, res, next) => {
-  const err = new Error('The route can not be found');
-  err.statusCode = 404;
-  next(err);
-});
-app.use(errorHandler);
+
 
 let users = [];
 
@@ -98,6 +93,14 @@ io.on('connection', (socket) => {
     io.emit('get_users', users);
   });
 });
+
+
+app.all('*', (req, res, next) => {
+  const err = new Error('The route can not be found');
+  err.statusCode = 404;
+  next(err);
+});
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 9000;
 

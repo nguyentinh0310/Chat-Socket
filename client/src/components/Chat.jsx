@@ -24,11 +24,10 @@ const Chat = () => {
   // Bắt đầu kết nối tới socket
   const socket = useRef();
 
-
   useEffect(() => {
     socket.current = io(URL_SOCKET);
     // nhận lại danh sách tin nhắn  từ phía server
-    socket.current.on("get_message", (data) => {
+    socket.current.on('get_message', (data) => {
       setArrivalMessage({
         sender: data.senderId,
         text: data.text,
@@ -38,11 +37,12 @@ const Chat = () => {
   }, []);
 
   // list ra danh sách tin nhắn và nhận sự thay đổi khi có tin nhắn mới tới trong phòng chat hiện tại
-  useEffect(() =>{
-    arrivalMessage && currentChat?.members.includes(arrivalMessage.sender)
-    && setMessages(prev => [...prev, arrivalMessage])
-
-  },[arrivalMessage,currentChat])
+  //  [...prev, arrivalMessage]) list ra tin nhắn cũ và mới
+  useEffect(() => {
+    arrivalMessage &&
+      currentChat?.members.includes(arrivalMessage.sender) &&
+      setMessages((prev) => [...prev, arrivalMessage]);
+  }, [arrivalMessage, currentChat]);
 
   //socket nhận sự thay đổi từ user
   useEffect(() => {
@@ -84,21 +84,26 @@ const Chat = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const content = newMessage.trim();
+    // nếu giá trị rỗng ko đc phép gửi
+    if (!content) {
+      return;
+    }
+
     const message = {
       sender: user._id,
-      text: newMessage,
+      text: content,
       conversationId: currentChat._id,
     };
 
     // lọc ra người nhận tương ứng trong cuộc trò chuyện hiện tại
-    const receiverId = currentChat.members.find(member => member !== user._id)
+    const receiverId = currentChat.members.find((member) => member !== user._id);
     // gửi tin nhắn cho phía server và nhận lại ở phía đối phương
     socket.current.emit('send_message', {
       senderId: user._id,
       receiverId,
-      text: newMessage,
+      text: content,
     });
-
     try {
       const response = await axios.post(`${apiUrl}/message`, message);
       setMessages([...messages, response.data]);
@@ -109,6 +114,38 @@ const Chat = () => {
     }
   };
 
+  const handleKeyPress = async (e) => {
+    if (e.key === 'Enter') {
+      const content = newMessage.trim();
+      // nếu giá trị rỗng ko đc phép gửi
+      if (!content) {
+        return;
+      }
+      const message = {
+        sender: user._id,
+        text: content,
+        conversationId: currentChat._id,
+      };
+
+      // lọc ra người nhận tương ứng trong cuộc trò chuyện hiện tại
+      const receiverId = currentChat.members.find((member) => member !== user._id);
+      // gửi tin nhắn cho phía server và nhận lại ở phía đối phương
+      socket.current.emit('send_message', {
+        senderId: user._id,
+        receiverId,
+        text: content,
+      });
+
+      try {
+        const response = await axios.post(`${apiUrl}/message`, message);
+        setMessages([...messages, response.data]);
+        setNewMessage('');
+      } catch (error) {
+        console.log(error);
+        throw new Error(error);
+      }
+    }
+  };
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -127,6 +164,8 @@ const Chat = () => {
   //   };
   //   getUserAnother()
   // }, [currentChat,user._id]);
+
+  console.log("currentChat",currentChat);
 
   return (
     <Fragment>
@@ -216,7 +255,7 @@ const Chat = () => {
                         name="newMessage"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        // onEnte={handleSubmit}
+                        onKeyDown={handleKeyPress}
                       />
                       <div className="input-group-append">
                         <span className="input-group-text send_btn" onClick={handleSubmit}>
