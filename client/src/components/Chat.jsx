@@ -150,22 +150,25 @@ const Chat = () => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // useEffect(() => {
-  //   const getUserAnother = async () => {
-  //     try {
-  //       const friendId = currentChat.members.find((m) => m !== user._id);
-  //       console.log(friendId,"friendId");
-  //       const response = await axios.get(`${apiUrl}/auth?userId=` + friendId);
-  //       console.log(response);
-  //     } catch (error) {
-  //       console.log(error);
-  //       throw new Error(error);
-  //     }
-  //   };
-  //   getUserAnother()
-  // }, [currentChat,user._id]);
+  useEffect(() => {
+    const getUserAnother = async () => {
+      try {
+        const friendId = currentChat?.members.find((m) => m !== user._id);
+        console.log(friendId, 'friendId');
+        if (friendId) {
+          const response = await axios.get(`${apiUrl}/auth?userId=` + friendId);
+          setUserAnother(response.data)
+        }
+      } catch (error) {
+        console.log(error);
+        throw new Error(error);
+      }
+    };
+    getUserAnother();
+  }, [currentChat, user._id]);
 
-  console.log("currentChat",currentChat);
+
+  console.log('currentChat', userAnother);
 
   return (
     <Fragment>
@@ -215,10 +218,10 @@ const Chat = () => {
                   <div className="card-header msg_head">
                     <div className="d-flex bd-highlight">
                       <div className="img_cont">
-                        <img src={user?.avatar} className="rounded-circle user_img" alt="" />
+                        <img src={userAnother?.avatar} className="rounded-circle user_img" alt="" />
                       </div>
                       <div className="user_info">
-                        <span>{user?.fullname}</span>
+                        <span>{userAnother?.fullname}</span>
                       </div>
                       <div className="video_cam">
                         <span>
