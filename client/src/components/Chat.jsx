@@ -146,10 +146,12 @@ const Chat = () => {
       }
     }
   };
+  // scrollbar
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // hàm thực hiện chức năng lấy ra bạn đang chat nhận sự thay đổi từ phòng chat hiện tại và user
   useEffect(() => {
     const getUserAnother = async () => {
       try {
@@ -167,8 +169,6 @@ const Chat = () => {
     getUserAnother();
   }, [currentChat, user._id]);
 
-
-  console.log('currentChat', userAnother);
 
   return (
     <Fragment>
@@ -240,7 +240,7 @@ const Chat = () => {
                   <div className="card-body msg_card_body">
                     {messages.map((message) => (
                       <div ref={scrollRef} key={message._id}>
-                        <Message message={message} owner={message.sender === user._id} />
+                        <Message key={message._id} message={message} owner={message.sender === user._id} />
                       </div>
                     ))}
                   </div>
