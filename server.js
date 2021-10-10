@@ -75,10 +75,12 @@ io.on('connection', (socket) => {
     const user = getUser(receiverId);
     // sau khi nhận tin nhắn thì lấy lại tin nhắn cho đối phương
     // Gửi tin nhắn riêng cho socket đó qua socketId
-    io.to(user.socketId).emit('get_message', {
-      senderId,
-      text,
-    });
+    if (user) {
+      io.to(user.socketId).emit('get_message', {
+        senderId,
+        text,
+      });
+    }
   });
 
   //ngắt kết nốt với socket
