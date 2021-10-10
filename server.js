@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const { errorHandler } = require('./middlewares/errorHandler');
 const cookieParser = require('cookie-parser');
+const path = require("path");
 
 const app = express();
 const router = require('./router');
