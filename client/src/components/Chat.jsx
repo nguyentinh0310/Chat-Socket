@@ -1,10 +1,10 @@
 import { AuthContext } from 'api/contexts/AuthContext';
-import { apiUrl } from 'api/contexts/contants';
+import { apiUrl, URL_SOCKET } from 'api/contexts/contants';
 import axios from 'axios';
 import React, { Fragment, useContext, useEffect, useRef, useState } from 'react';
-import { io } from 'socket.io-client';
 import ListUser from './ListUser';
 import Message from './Message';
+import { io } from 'socket.io-client';
 
 const Chat = () => {
   const {
@@ -25,7 +25,7 @@ const Chat = () => {
   const socket = useRef();
 
   useEffect(() => {
-    socket.current = io("http://localhost:9000");
+    socket.current = io(URL_SOCKET);
     // nhận lại danh sách tin nhắn  từ phía server
     socket.current.on('get_message', (data) => {
       setArrivalMessage({
