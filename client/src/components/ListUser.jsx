@@ -1,4 +1,3 @@
-import { apiUrl } from 'api/contexts/contants';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
@@ -10,7 +9,7 @@ const ListUser = ({ conversation, currentUser }) => {
         // tìm nhưng userId trong cuộc hội thoại khác với userid hiện tại
         const friendId = conversation.members.find((member) => member !== currentUser._id);
         // lấy ra danh sách user nhận sự thay đổi từ currentUser,conversation
-        const response = await axios.get(`${apiUrl}/auth?userId=` + friendId);
+        const response = await axios.get(`/api/auth?userId=` + friendId);
         setUser(response.data);
       } catch (error) {
         console.log(error);

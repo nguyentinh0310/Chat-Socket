@@ -1,15 +1,15 @@
-import { createContext, useEffect, useReducer } from 'react';
 import axios from 'axios';
-import { authReducer } from '../reducers/authReducer';
-import { apiUrl, LOCAL_STORAGE_TOKEN_NAME } from './contants';
+import { createContext, useEffect, useReducer } from 'react';
 import setAuthToken from 'utils/setAuthToken';
+import { authReducer } from '../reducers/authReducer';
+import { LOCAL_STORAGE_TOKEN_NAME } from './contants';
 
 export const AuthContext = createContext();
 
 const AuthContextProvider = ({ children }) => {
   const [authState, dispatch] = useReducer(authReducer, {
     // trạng thái ban đầu
-    loading: false,
+    loading: true,
     isAuthenticated: false,
     user: null,
   });
@@ -20,7 +20,7 @@ const AuthContextProvider = ({ children }) => {
       setAuthToken(localStorage[LOCAL_STORAGE_TOKEN_NAME]);
     }
     try {
-      const response = await axios.get(`${apiUrl}/auth/infor`);
+      const response = await axios.get(`/api/auth/infor`);
       if (response.data.success) {
         dispatch({
           type: 'SET_AUTH',
@@ -42,7 +42,7 @@ const AuthContextProvider = ({ children }) => {
   //   login
   const login = async (userData) => {
     try {
-      const response = await axios.post(`${apiUrl}/auth/login`, userData);
+      const response = await axios.post(`/api/auth/login`, userData);
       if (response.data.success)
         localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, response.data.accessToken);
       // check lấy user thành công
@@ -56,7 +56,7 @@ const AuthContextProvider = ({ children }) => {
   // Register
   const register = async (userData) => {
     try {
-      const response = await axios.post(`${apiUrl}/auth/register`, userData);
+      const response = await axios.post(`/api/auth/register`, userData);
       if (response.data.success)
         localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, response.data.accessToken);
 

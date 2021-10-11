@@ -36,7 +36,7 @@ const Login = () => {
       <div className="row wrapper">
         <div className="col-10 col-lg-5">
           <form className="shadow-lg" onSubmit={handleSubmit}>
-            <h1 className="mb-3 title">Chat app</h1>
+            <h1 className="mb-3 title">Chat App</h1>
             <h3 className="mb-3 title">Đăng Nhập</h3>
             <div className="form-group">
               <label htmlFor="username_field">Username</label>

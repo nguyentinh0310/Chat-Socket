@@ -1,10 +1,10 @@
 import { AuthContext } from 'api/contexts/AuthContext';
-import { apiUrl, URL_SOCKET } from 'api/contexts/contants';
+import { URL_SOCKET } from 'api/contexts/contants';
 import axios from 'axios';
 import React, { Fragment, useContext, useEffect, useRef, useState } from 'react';
+import { io } from 'socket.io-client';
 import ListUser from './ListUser';
 import Message from './Message';
-import { io } from 'socket.io-client';
 
 const Chat = () => {
   const {
@@ -58,7 +58,7 @@ const Chat = () => {
   useEffect(() => {
     const getConversation = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/conversation/` + user._id);
+        const response = await axios.get(`/api/conversation/` + user._id);
         setConversations(response.data);
       } catch (error) {
         console.log(error);
@@ -72,7 +72,7 @@ const Chat = () => {
   useEffect(() => {
     const getMessage = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/message/` + currentChat?._id);
+        const response = await axios.get(`/api/message/` + currentChat?._id);
         setMessages(response.data);
       } catch (error) {
         console.log(error);
@@ -105,7 +105,7 @@ const Chat = () => {
       text: content,
     });
     try {
-      const response = await axios.post(`${apiUrl}/message`, message);
+      const response = await axios.post(`/api/message`, message);
       setMessages([...messages, response.data]);
       setNewMessage('');
     } catch (error) {
@@ -137,7 +137,7 @@ const Chat = () => {
       });
 
       try {
-        const response = await axios.post(`${apiUrl}/message`, message);
+        const response = await axios.post(`/api/message`, message);
         setMessages([...messages, response.data]);
         setNewMessage('');
       } catch (error) {
@@ -158,7 +158,7 @@ const Chat = () => {
         const friendId = currentChat?.members.find((m) => m !== user._id);
         console.log(friendId, 'friendId');
         if (friendId) {
-          const response = await axios.get(`${apiUrl}/auth?userId=` + friendId);
+          const response = await axios.get(`/api/auth?userId=` + friendId);
           setUserAnother(response.data)
         }
       } catch (error) {
