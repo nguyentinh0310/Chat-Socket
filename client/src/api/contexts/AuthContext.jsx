@@ -24,7 +24,7 @@ const AuthContextProvider = ({ children }) => {
       if (response.data.success) {
         dispatch({
           type: 'SET_AUTH',
-          payload: { isAuthenticated: true, user: response.data.user },
+          payload: { loading: false, isAuthenticated: true, user: response.data.user },
         });
       }
     } catch (error) {
@@ -50,9 +50,7 @@ const AuthContextProvider = ({ children }) => {
 
       return response.data;
     } catch (error) {
-    	return error.response.data
-				? error.response.data
-				: { success: false, message:  error.message }
+      return error.response.data ? error.response.data : { success: false, message: error.message };
     }
   };
   // Register
@@ -66,9 +64,7 @@ const AuthContextProvider = ({ children }) => {
 
       return response.data;
     } catch (error) {
-      	return error.response.data
-				? error.response.data
-				: { success: false, message:  error.message }
+      return error.response.data ? error.response.data : { success: false, message: error.message };
     }
   };
 
@@ -82,7 +78,7 @@ const AuthContextProvider = ({ children }) => {
   };
 
   //  context data
-  const authContextData = { login, register, authState, logout,  };
+  const authContextData = { login, register, authState, logout };
 
   //   return provider
   return <AuthContext.Provider value={authContextData}>{children}</AuthContext.Provider>;
