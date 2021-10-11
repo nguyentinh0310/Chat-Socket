@@ -9,7 +9,7 @@ export const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
   const [authState, dispatch] = useReducer(authReducer, {
     // trạng thái ban đầu
-    loading: true,
+    loading: false,
     isAuthenticated: false,
     user: null,
   });
