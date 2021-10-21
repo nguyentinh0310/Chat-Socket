@@ -1,5 +1,5 @@
 import ProtectedRoute from 'components/routing/ProtectedRoute';
-import AuthContextProvider from 'api/contexts/AuthContext';
+import AuthContextProvider from 'app/contexts/AuthContext';
 import { Suspense } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import './App.css';

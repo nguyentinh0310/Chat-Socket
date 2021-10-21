@@ -1,4 +1,4 @@
-import { AuthContext } from 'api/contexts/AuthContext';
+import { AuthContext } from 'app/contexts/AuthContext';
 import React, { Fragment, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AlertMessage from 'components/layout/AlertMessage';

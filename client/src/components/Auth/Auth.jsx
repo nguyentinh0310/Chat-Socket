@@ -1,5 +1,5 @@
 import Loader from 'components/layout/Loader';
-import { AuthContext } from 'api/contexts/AuthContext';
+import { AuthContext } from 'app/contexts/AuthContext';
 import React, { useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 import Login from './Login';

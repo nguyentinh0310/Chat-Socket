@@ -1,5 +1,5 @@
-import { AuthContext } from 'api/contexts/AuthContext';
-import { URL_SOCKET } from 'api/contexts/contants';
+import { AuthContext } from 'app/contexts/AuthContext';
+import { URL_SOCKET } from 'app/contexts/contants';
 import axios from 'axios';
 import React, { Fragment, useContext, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';

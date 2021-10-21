@@ -1,7 +1,7 @@
 import Loader from 'components/layout/Loader';
 import { useContext } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { AuthContext } from '../../api/contexts/AuthContext';
+import { AuthContext } from '../../app/contexts/AuthContext';
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   const {
     authState: { loading, isAuthenticated },
